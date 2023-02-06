@@ -42,9 +42,13 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  if (!event.message.text.startsWith("hey sk")) {
+    return Promise.resolve(null);
+  }
+
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: event.message.text ,
+    prompt: event.message.text.substring(7) ,
     max_tokens: 500,
   });
 
