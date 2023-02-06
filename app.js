@@ -43,7 +43,8 @@ async function handleEvent(event) {
   }
 
   if (!event.message.text.startsWith("hey sk")) {
-    return Promise.resolve(null);
+    const response = { type: 'text', text: "你是不是要找SK? 請輸入 hey sk +問題 來找到我！" };
+    return client.replyMessage(event.replyToken, response);
   }
 
   const completion = await openai.createCompletion({
