@@ -1,0 +1,24 @@
+{
+  "name": "kaiserbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "node app",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oh001738/LineBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oh001738/LineBot/issues"
+  },
+  "homepage": "https://github.com/oh001738/LineBot#readme",
+  "dependencies": {
+    "@line/bot-sdk": "^7.5.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
