@@ -9,7 +9,6 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-
 // create LINE SDK config from env variables
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -20,11 +19,9 @@ const config = {
 const client = new line.Client(config);
 
 // create Express app
-// about Express itself: https://expressjs.com/
 const app = express();
 
 // register a webhook handler with middleware
-// about the middleware, please refer to doc
 app.post('/callback', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
@@ -61,7 +58,7 @@ async function handleEvent(event) {
   }
 
   if (!event.message.text.startsWith("hey sk")) {
-    const response = { type: 'text', text: "你是不是要找SK? 請輸入 hey sk +問題 來找到我！" };
+    const response = { type: 'text', text: "請輸入 hey sk +問題 來找到我！" };
     return client.replyMessage(event.replyToken, response);
   }
 
