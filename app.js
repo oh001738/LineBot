@@ -42,6 +42,16 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  if (event.message.text === "Cat") {
+    const imageUrl = 'https://www.esunbank.com.tw/bank/-/media/New-ESUNBANK/Home/HugeBanner/FHC/drawesun_800_500.jpg';
+    const imageMessage = {
+      type: 'image',
+      originalContentUrl: imageUrl,
+      previewImageUrl: imageUrl,
+    };
+    return client.replyMessage(event.replyToken, imageMessage);
+  }
+
   if (!event.message.text.startsWith("hey sk")) {
     const response = { type: 'text', text: "你是不是要找SK? 請輸入 hey sk +問題 來找到我！" };
     return client.replyMessage(event.replyToken, response);
