@@ -42,6 +42,24 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  if (event.message.text.startsWith("show me")) {
+    const completion = await openai.createImageCompletion({
+      model: "image-alpha-001",
+      prompt: event.message.text.substring(8),
+      n: 1,
+    });
+
+    // create a image message
+    const image = {
+      type: 'image',
+      originalContentUrl: completion.data.choices[0].image,
+      previewImageUrl: completion.data.choices[0].image,
+    };
+
+    // use reply API
+    return client.replyMessage(event.replyToken, image);
+  }
+
   if (!event.message.text.startsWith("hey sk")) {
     const response = { type: 'text', text: "你是不是要找SK? 請輸入 hey sk +問題 來找到我！" };
     return client.replyMessage(event.replyToken, response);
@@ -49,7 +67,7 @@ async function handleEvent(event) {
 
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: event.message.text.substring(7) ,
+    prompt: event.message.text.substring(7),
     max_tokens: 500,
   });
 
