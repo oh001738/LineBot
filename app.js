@@ -8,6 +8,13 @@ const line = require('@line/bot-sdk');
 // Import the 'express' library for creating a web server
 const express = require('express');
 
+// Import the 'openai' library for query openai data
+const { Configuration, OpenAIApi } = require("openai");
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 // Create a configuration object for the LINE Bot API using environment variables
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -33,17 +40,22 @@ app.post('/callback', line.middleware(config), (req, res) => {
 });
 
 // Event handler function to process incoming events
-function handleEvent(event) {
-  // If the event is not a message event or the message is not a text message,
-  // ignore the event
+async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
+    // ignore non-text-message event
     return Promise.resolve(null);
   }
 
-  // Create a text message to echo back the received message text
-  const echo = { type: 'text', text: event.message.text };
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: event.message.text ,
+    max_tokens: 200,
+  });
 
-  // Use the reply API to send the echo message back to the user
+  // create a echoing text message
+  const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
+
+  // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
 
