@@ -52,7 +52,23 @@ async function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-
+ 
+  //OPENAI IMAGE
+  const imageCompletion = await openai.createImageCompletion({
+    model: "image-alpha-001",
+    prompt: event.message.text,
+    n: 1,
+    size: "1024x1024",
+    response_format: "url"
+  });
+  const imageUrl = imageCompletion.data.images[0].url;
+  const echo = {
+    type: "image",
+    originalContentUrl: imageUrl,
+    previewImageUrl: imageUrl
+  };
+  //OPENAI IMAGE
+  /** 先拿掉文字回覆
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: event.message.text ,
@@ -61,7 +77,7 @@ async function handleEvent(event) {
 
   // create a echoing text message
   const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
-
+  */
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
