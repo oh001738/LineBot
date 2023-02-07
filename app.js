@@ -74,11 +74,6 @@ async function handleEvent(event) {
     if (error) throw new Error(error);
   
     const imageUrl = JSON.parse(body).data[0].url;
-    const echo = {
-      type: "image",
-      originalContentUrl: imageUrl,
-      previewImageUrl: imageUrl
-    };
     // handle echo object here
   });
   //OPENAI IMAGE
@@ -92,6 +87,11 @@ async function handleEvent(event) {
   // create a echoing text message
   const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
   */
+  const echo = {
+    type: "image",
+    originalContentUrl: imageUrl,
+    previewImageUrl: imageUrl
+  };
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
