@@ -63,16 +63,17 @@ async function handleEvent(event) {
     });
     echo = { type: 'text', text: completion.data.choices[0].text.trim() };
   } else if (event.message.text.startsWith("show me ")) {
-    const prompt = event.message.text.replace("show me ", "");
-    const imageCompletion = await openai.createImage({
-      model: "image-alpha-001",
-      prompt: "A cute baby sea otter",
-      n: 1,
-      size: "256x256",
-      response_format: "url"
-    });
-    const imageUrl = imageCompletion.data.images[0].url;
-    console.log(imageCompletion.data.data[0].url);
+   // const prompt = event.message.text.replace("show me ", "");
+    //const imageCompletion = await openai.createImage({
+      //model: "image-alpha-001",
+      //prompt: "A cute baby sea otter",
+      //n: 1,
+      //size: "256x256",
+      //response_format: "url"
+    //});
+    //const imageUrl = imageCompletion.data.images[0].url;
+    //console.log(imageCompletion.data.data[0].url);
+    imageUrl = "https://www.esunbank.com.tw/bank/-/media/New-ESUNBANK/Home/HugeBanner/FHC/drawesun_800_500.jpg?h=500&w=800&hash=3EB0A2D6452F6A5F9BEDB0D90381D2D0";
     echo = {
       type: "image",
       originalContentUrl: imageUrl,
