@@ -41,15 +41,14 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  if (event.message.text.startsWith("show me ")) {
-    const description = event.message.text.slice(8);
+  if (event.message.text.startsWith("go")) {
+  const description = event.message.text.slice(3);
     try {
       const completion = await openai.createCompletion({
         model: "image-alpha-001",
-        prompt: `Complete the following prompt: show me ${description}`,
+        prompt: `Complete the following prompt: go ${description}`,
         max_tokens: 50,
-      });
-  
+      }); 
       const imageURL = completion.data.choices[0].text.trim();
       
       // 透過 Axios 將圖片下載下來
@@ -67,7 +66,6 @@ async function handleEvent(event) {
           }
         ]
       };
-      const accessToken = process.env.CHANNEL_ACCESS_TOKEN;
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`
