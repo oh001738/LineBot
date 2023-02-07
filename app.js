@@ -40,34 +40,16 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null);
   }
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: event.message.text ,
+    max_tokens: 500,
+  });
+  // create a response text message
+  const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
 
-  if (event.message.text.startsWith("show me")) {
-    // Use OpenAI Image API to generate an image
-    const image = await openai.createImage({
-      model: "image-alpha-001",
-      prompt: event.message.text.substring(7)
-    });
-
-    // Reply with the generated image
-    return client.replyMessage(event.replyToken, {
-      type: 'image',
-      originalContentUrl: image.data.url,
-      previewImageUrl: image.data.url
-    });
-  } else {
-    // Use OpenAI Text API to generate a response
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: event.message.text ,
-      max_tokens: 500,
-    });
-
-    // Reply with the generated response
-    return client.replyMessage(event.replyToken, {
-      type: 'text',
-      text: completion.data.choices[0].text.trim()
-    });
-  }
+  // use reply API
+  return client.replyMessage(event.replyToken, echo);
 }
 
 const port = process.env.PORT || 3000;
