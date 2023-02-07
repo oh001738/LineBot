@@ -49,7 +49,7 @@ async function handleEvent(event) {
         prompt: `Complete the following prompt: go ${description}`,
         max_tokens: 50,
       }); 
-      const imageURL = completion.data.choices[0].text.trim();
+      const imageURL = completion.data.choices[0].url;
       
       // 透過 Axios 將圖片下載下來
       const response = await axios.get(imageURL, { responseType: 'arraybuffer' });
