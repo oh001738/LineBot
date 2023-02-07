@@ -70,7 +70,7 @@ async function handleEvent(event) {
 } else if (event.message.text === "hi sk") {
   echo = { type: 'text', text: "您好有什麼事情嗎?" };
 } else {
-  echo = { type: 'text', text: event.message.text };
+  
 }
   // use reply API
   return client.replyMessage(event.replyToken, echo);
