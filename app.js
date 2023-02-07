@@ -15,7 +15,7 @@ const apiKeys = [
   process.env.OPENAI_API_KEY2
 ];
 const selectedApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
-
+console.log("Using API Key:", selectedApiKey);
 const configuration = new Configuration({
   apiKey: process.env[selectedApiKey],
 });
