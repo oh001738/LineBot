@@ -53,18 +53,40 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: event.message.text ,
-    max_tokens: 200,
-  });
+  let echo;
+  if (event.message.text.startsWith("hey sk ")) {
+    const prompt = event.message.text.replace("hey sk ", "");
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt,
+      max_tokens: 200,
+    });
 
-  // create a echoing text message
-  const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
+    echo = { type: 'text', text: completion.data.choices[0].text.trim() };
+  } else if (event.message.text.startsWith("show me ")) {
+    const prompt = event.message.text.replace("show me ", "");
+    const imageCompletion = await openai.createImageCompletion({
+      model: "image-alpha-001",
+      prompt,
+      n: 1,
+      size: "1024x1024",
+      response_format: "url"
+    });
+    const imageUrl = imageCompletion.data.images[0].url;
+    echo = {
+      type: "image",
+      originalContentUrl: imageUrl,
+      previewImageUrl: imageUrl
+    };
+  } else {
+    // input message doesn't match "hey sk " or "show me "
+    return Promise.resolve(null);
+  }
 
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
+
 
 // Start the Express app and listen on the specified port
 const port = process.env.PORT || 3000;
