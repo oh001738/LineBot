@@ -65,7 +65,7 @@ async function handleEvent(event) {
     echo = { type: 'text', text: completion.data.choices[0].text.trim() };
   } else if (event.message.text.startsWith("show me ")) {
     const prompt = event.message.text.replace("show me ", "");
-    const imageCompletion = await openai.createImageCompletion({
+    const imageCompletion = await openai.createImage({
       model: "image-alpha-001",
       prompt,
       n: 1,
