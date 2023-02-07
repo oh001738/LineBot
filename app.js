@@ -54,7 +54,7 @@ async function handleEvent(event) {
   }
  
   //OPENAI IMAGE
-  const imageCompletion = await openai.createImageCompletion({
+  const imageCompletion = await openai.createImage({
     model: "image-alpha-001",
     prompt: event.message.text,
     n: 1,
