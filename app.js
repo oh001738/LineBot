@@ -2,6 +2,7 @@
 // stored in the '.env' file
 require('dotenv').config();
 
+const request = require("request");
 // Import the '@line/bot-sdk' library for using the LINE Bot API
 const line = require('@line/bot-sdk');
 
@@ -54,19 +55,32 @@ async function handleEvent(event) {
   }
  
   //OPENAI IMAGE
-  const imageCompletion = await openai.createImage({
-    model: "image-alpha-001",
-    prompt: event.message.text,
-    n: 1,
-    size: "1024x1024",
-    response_format: "url"
-  });
-  const imageUrl = imageCompletion.data.images[0].url;
-  const echo = {
-    type: "image",
-    originalContentUrl: imageUrl,
-    previewImageUrl: imageUrl
+  const options = {
+    method: "POST",
+    url: "https://api.openai.com/v1/images/generations",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "image-alpha-001",
+      prompt: event.message.text,
+      n: 1,
+      size: "1024x1024",
+    })
   };
+  
+  request(options, function(error, response, body) {
+    if (error) throw new Error(error);
+  
+    const imageUrl = JSON.parse(body).data[0].url;
+    const echo = {
+      type: "image",
+      originalContentUrl: imageUrl,
+      previewImageUrl: imageUrl
+    };
+    // handle echo object here
+  });
   //OPENAI IMAGE
   /** 先拿掉文字回覆
   const completion = await openai.createCompletion({
