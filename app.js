@@ -52,21 +52,26 @@ async function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-
+  let echo;
+  if (event.message.text.startsWith("show")){
   const completion = await openai.createImage({
     prompt: event.message.text ,
     n: 1,
-    size: "1024x1024",
+    size: "256x256",
   });
   image_url = completion.data.data[0].url;
   // create a echoing text message
-  const echo = { 
+  echo = { 
     
     type: 'image', 
     originalContentUrl: image_url,
     previewImageUrl: image_url
   };
-
+} else if (event.message.text === "hi sk") {
+  echo = { type: 'text', text: "您好有什麼事情嗎?" };
+} else {
+  echo = { type: 'text', text: event.message.text };
+}
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
