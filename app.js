@@ -1,14 +1,7 @@
-// Import the 'dotenv' package to access environment variables
-// stored in the '.env' file
 require('dotenv').config();
 
-// Import the '@line/bot-sdk' library for using the LINE Bot API
 const line = require('@line/bot-sdk');
-
-// Import the 'express' library for creating a web server
 const express = require('express');
-
-// Import the 'openai' library for query openai data
 const { Configuration, OpenAIApi } = require("openai");
 const apiKeys = [
   process.env.OPENAI_API_KEY1,
@@ -16,13 +9,10 @@ const apiKeys = [
 ];
 const selectedApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
 console.log("Using API Key:", selectedApiKey);
-
 const configuration = new Configuration({
   apiKey: selectedApiKey,
 });
 const openai = new OpenAIApi(configuration);
-
-// Create a configuration object for the LINE Bot API using environment variables
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET,
@@ -36,7 +26,6 @@ const app = express();
 
 // Register a handler for receiving webhook events from the LINE platform
 app.post('/callback', line.middleware(config), (req, res) => {
-  // Use 'Promise.all()' to handle all events in the webhook request body
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
@@ -49,24 +38,38 @@ app.post('/callback', line.middleware(config), (req, res) => {
 // Event handler function to process incoming events
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
     return Promise.resolve(null);
   }
 
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: event.message.text ,
-    max_tokens: 200,
-  });
+  if (event.message.text.startsWith("show me")) {
+    // Use OpenAI Image API to generate an image
+    const image = await openai.createImage({
+      model: "image-alpha-001",
+      prompt: event.message.text.substring(7)
+    });
 
-  // create a echoing text message
-  const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
+    // Reply with the generated image
+    return client.replyMessage(event.replyToken, {
+      type: 'image',
+      originalContentUrl: image.data.url,
+      previewImageUrl: image.data.url
+    });
+  } else {
+    // Use OpenAI Text API to generate a response
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: event.message.text ,
+      max_tokens: 500,
+    });
 
-  // use reply API
-  return client.replyMessage(event.replyToken, echo);
+    // Reply with the generated response
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: completion.data.choices[0].text.trim()
+    });
+  }
 }
 
-// Start the Express app and listen on the specified port
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
