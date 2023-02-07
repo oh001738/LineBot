@@ -61,15 +61,14 @@ async function handleEvent(event) {
       prompt,
       max_tokens: 200,
     });
-    console.log(completion.data.choices[0].text.trim());
     echo = { type: 'text', text: completion.data.choices[0].text.trim() };
   } else if (event.message.text.startsWith("show me ")) {
     const prompt = event.message.text.replace("show me ", "");
     const imageCompletion = await openai.createImage({
       model: "image-alpha-001",
-      prompt,
+      prompt: "A cute baby sea otter",
       n: 1,
-      size: "1024x1024",
+      size: "256x256",
       response_format: "url"
     });
     const imageUrl = imageCompletion.data.images[0].url;
