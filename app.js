@@ -61,7 +61,7 @@ async function handleEvent(event) {
       prompt,
       max_tokens: 200,
     });
-
+    console.log(completion.data.choices[0].text.trim());
     echo = { type: 'text', text: completion.data.choices[0].text.trim() };
   } else if (event.message.text.startsWith("show me ")) {
     const prompt = event.message.text.replace("show me ", "");
@@ -73,6 +73,7 @@ async function handleEvent(event) {
       response_format: "url"
     });
     const imageUrl = imageCompletion.data.images[0].url;
+    console.log(imageCompletion.data.data[0].url);
     echo = {
       type: "image",
       originalContentUrl: imageUrl,
