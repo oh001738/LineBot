@@ -53,14 +53,19 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
+  const completion = await openai.createImage({
     prompt: event.message.text ,
-    max_tokens: 500,
+    n: 1,
+    size: "1024x1024",
   });
-
+  image_url = completion.data.data[0].url;
   // create a echoing text message
-  const echo = { type: 'text', text: completion.data.choices[0].text.trim() };
+  const echo = { 
+    
+    type: 'image', 
+    originalContentUrl: image_url,
+    previewImageUrl: image_url
+  };
 
   // use reply API
   return client.replyMessage(event.replyToken, echo);
