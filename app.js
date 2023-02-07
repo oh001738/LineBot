@@ -10,8 +10,14 @@ const express = require('express');
 
 // Import the 'openai' library for query openai data
 const { Configuration, OpenAIApi } = require("openai");
+const apiKeys = [
+  process.env.OPENAI_API_KEY1,
+  process.env.OPENAI_API_KEY2
+];
+const selectedApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env[selectedApiKey],
 });
 const openai = new OpenAIApi(configuration);
 
