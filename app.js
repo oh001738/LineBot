@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const axios = require('axios');
 const line = require('@line/bot-sdk');
 const express = require('express');
 const { Configuration, OpenAIApi } = require("openai");
@@ -40,6 +40,47 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null);
   }
+
+  if (event.message.text.startsWith("show me ")) {
+    const description = event.message.text.slice(8);
+    try {
+      const completion = await openai.createCompletion({
+        model: "image-alpha-001",
+        prompt: `Complete the following prompt: show me ${description}`,
+        max_tokens: 50,
+      });
+  
+      const imageURL = completion.data.choices[0].text.trim();
+      
+      // 透過 Axios 將圖片下載下來
+      const response = await axios.get(imageURL, { responseType: 'arraybuffer' });
+      const image = Buffer.from(response.data, 'binary').toString('base64');
+  
+      // 將圖片傳送到 LINE 使用者
+      const message = {
+        to: event.source.userId,
+        messages: [
+          {
+            type: 'image',
+            originalContentUrl: `data:image/jpeg;base64,${image}`,
+            previewImageUrl: `data:image/jpeg;base64,${image}`
+          }
+        ]
+      };
+      const accessToken = process.env.CHANNEL_ACCESS_TOKEN;
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      };
+      const result = await axios.post('https://api.line.me/v2/bot/message/push', message, { headers });
+  
+      console.log(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: event.message.text ,
