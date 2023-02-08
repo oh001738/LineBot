@@ -78,7 +78,7 @@ async function handleEvent(event) {
     });
     echo = { 
       type: 'text', 
-      text: completion.data.choices[0].text.trim() 
+      text: 'hello' 
     };
 	} else {
 
