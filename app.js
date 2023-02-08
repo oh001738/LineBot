@@ -9,26 +9,23 @@ const line = require('@line/bot-sdk');
 const express = require('express');
 
 // Import the 'openai' library for query openai data
-const {
-	Configuration,
-	OpenAIApi
-} = require("openai");
+const { Configuration, OpenAIApi } = require("openai");
 const apiKeys = [
-	process.env.OPENAI_API_KEY1,
-	process.env.OPENAI_API_KEY2
+  process.env.OPENAI_API_KEY1,
+  process.env.OPENAI_API_KEY2
 ];
 const selectedApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
 console.log("Using API Key:", selectedApiKey);
 
 const configuration = new Configuration({
-	apiKey: selectedApiKey,
+  apiKey: selectedApiKey,
 });
 const openai = new OpenAIApi(configuration);
 
 // Create a configuration object for the LINE Bot API using environment variables
 const config = {
-	channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-	channelSecret: process.env.CHANNEL_SECRET,
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET,
 };
 
 // Create a client for the LINE Bot API using the configuration object
@@ -39,56 +36,57 @@ const app = express();
 
 // Register a handler for receiving webhook events from the LINE platform
 app.post('/callback', line.middleware(config), (req, res) => {
-	// Use 'Promise.all()' to handle all events in the webhook request body
-	Promise
-		.all(req.body.events.map(handleEvent))
-		.then((result) => res.json(result))
-		.catch((err) => {
-			console.error(err);
-			res.status(500).end();
-		});
+  // Use 'Promise.all()' to handle all events in the webhook request body
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
 });
 
 // Event handler function to process incoming events
 async function handleEvent(event) {
-	if (event.type !== 'message' || event.message.type !== 'text') {
-		// ignore non-text-message event
-		return Promise.resolve(null);
-	}
-	let echo;
-	if (event.message.text.startsWith("show")) {
-		const completion = await openai.createImage({
-			prompt: event.message.text,
-			n: 1,
-			size: "256x256",
-		});
-		image_url = completion.data.data[0].url;
-		// create a echoing text message
-		echo = {
-			type: 'image',
-			originalContentUrl: image_url,
-			previewImageUrl: image_url
-		};
-	} else if (event.message.text === "hi sk") {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: event.message.text,
-      temperature: 0.6,
-      max_tokens: 500,
-    });
-    echo = { 
-      type: 'text', 
-      text: 'hello' 
-    };
-	} else {
-
-	}
-	// use reply API
-	return client.replyMessage(event.replyToken, echo);
+  if (event.type !== 'message' || event.message.type !== 'text') {
+    // ignore non-text-message event
+    return Promise.resolve(null);
+  }
+  let echo;
+  if (event.message.text.startsWith("show")){
+  const completion = await openai.createImage({
+    prompt: event.message.text ,
+    n: 1,
+    size: "256x256",
+  });
+  image_url = completion.data.data[0].url;
+  // create a echoing text message
+  echo = { 
+    
+    type: 'image', 
+    originalContentUrl: image_url,
+    previewImageUrl: image_url
+  };
+} else if (event.message.text.startsWith("hi sk")) {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: event.message.text,
+    temperature: 0.6,
+    max_tokens: 500,
+  });
+  echo = { 
+    type: 'text', 
+    text: completion.data.choices[0].text.trim()
+  };
+} else {
+  
+}
+  // use reply API
+  return client.replyMessage(event.replyToken, echo);
 }
 
 // Start the Express app and listen on the specified port
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-	console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
