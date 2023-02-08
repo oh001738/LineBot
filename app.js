@@ -84,7 +84,7 @@ async function handleEvent(event) {
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
-
+app.use('/healthcheck', require('./routes/healthcheck'));
 // Start the Express app and listen on the specified port
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
