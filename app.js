@@ -79,7 +79,7 @@ async function handleEvent(event) {
     text: completion.data.choices[0].text.trim()
   };
 } else {
-  
+  return Promise.resolve(null);
 }
   // use reply API
   return client.replyMessage(event.replyToken, echo);
