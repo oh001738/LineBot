@@ -53,7 +53,7 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
   let echo;
-  if (event.message.text.startsWith("show")){
+  if (event.message.text.toLowerCase().startsWith("show")){
   const completion = await openai.createImage({
     prompt: event.message.text ,
     n: 1,
@@ -67,7 +67,7 @@ async function handleEvent(event) {
     originalContentUrl: image_url,
     previewImageUrl: image_url
   };
-} else if (event.message.text.startsWith("hi sk")) {
+} else if (event.message.text.toLowerCase().startsWith("hi sk")) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: event.message.text,
