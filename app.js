@@ -55,11 +55,14 @@ async function handleEvent(event) {
   }
   let echo;
   const textCallSign = process.env.TEXT_CALL_SIGN;
+  const textCallSignLength = textCallSign.length;
   const imageCallSign = process.env.IMAGE_CALL_SIGN;
+  const imageCallSignLength = imageCallSign.length;
+
   const inputText = event.message.text.toLowerCase();
   if (inputText.startsWith(imageCallSign)){
   const completion = await openai.createImage({
-    prompt: event.message.text ,
+    prompt: event.message.text.substring(textCallSignLength) ,
     n: 1,
     size: "256x256",
   });
@@ -74,7 +77,7 @@ async function handleEvent(event) {
 } else if (inputText.startsWith(textCallSign)) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: event.message.text,
+    prompt: event.message.text.substring(imageCallSignLength),
     temperature: 0.1,
     max_tokens: 500,
   });
