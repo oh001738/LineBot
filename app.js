@@ -55,7 +55,7 @@ async function handleEvent(event) {
   }
   let echo;
   const textCallSign = process.env.TEXT_CALL_SIGN;
-  const textCallSignLength = textCallSign.length + 1;
+  const textCallSignLength = textCallSign.length;
   const imageCallSign = process.env.IMAGE_CALL_SIGN;
   const imageCallSignLength = imageCallSign.length;
 
