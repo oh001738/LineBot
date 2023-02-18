@@ -76,7 +76,7 @@ async function handleEvent(event) {
   };
 } else if (inputText.startsWith(textCallSign)) {
   const completion = await openai.createCompletion({
-    model: "text-chat-davinci-002-20230126",
+    model: "text-chat-davinci-002",
     prompt: event.message.text.substring(imageCallSignLength),
     temperature: 0.6,
     max_tokens: 500,
