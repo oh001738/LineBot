@@ -36,15 +36,14 @@ const client = new line.Client(config);
 const app = express();
 
 // Register a handler for receiving webhook events from the LINE platform
-app.post('/callback', line.middleware(config), (req, res) => {
-  // Use 'Promise.all()' to handle all events in the webhook request body
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
+app.post('/callback', line.middleware(config), async (req, res) => {
+  try {
+    const result = await Promise.all(req.body.events.map(handleEvent));
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).end();
+  }
 });
 
 // Event handler function to process incoming events
