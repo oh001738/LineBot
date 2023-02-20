@@ -74,7 +74,8 @@ async function handleEvent(event) {
     originalContentUrl: image_url,
     previewImageUrl: image_url
   };
-} else if (inputText.startsWith(textCallSign)) {
+} 
+else if (inputText.startsWith(textCallSign)) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: event.message.text.substring(textCallSignLength),
@@ -85,7 +86,11 @@ async function handleEvent(event) {
     type: 'text', 
     text: completion.data.choices[0].text.trim()
   };
-} else {
+}
+else if (inputText === textCallSign || inputText === imageCallSign) {
+  return Promise.resolve(null);
+}
+else {
   return Promise.resolve(null);
 }
   // use reply API
