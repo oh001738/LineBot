@@ -59,7 +59,14 @@ async function handleEvent(event) {
   const imageCallSignLength = imageCallSign.length;
 
   const inputText = event.message.text.toLowerCase();
-  if (inputText.startsWith(imageCallSign)){
+  if (inputText === textCallSign) {
+    echo = { 
+      type: 'text', 
+      text: '甚麼事情?'
+    };
+    return Promise.resolve(null);
+  }
+  else if (inputText.startsWith(imageCallSign)){
   const completion = await openai.createImage({
     prompt: event.message.text.substring(imageCallSignLength) ,
     n: 1,
@@ -85,9 +92,6 @@ else if (inputText.startsWith(textCallSign)) {
     type: 'text', 
     text: completion.data.choices[0].text.trim()
   };
-}
-else if (inputText === textCallSign || inputText === imageCallSign) {
-  return Promise.resolve(null);
 }
 else {
   return Promise.resolve(null);
