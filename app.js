@@ -87,7 +87,7 @@ async function handleEvent(event) {
         const completion = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: event.message.text.substring(textCallSignLength),
-            temperature: 0.6,
+            temperature: 0.3,
             max_tokens: 500,
         });
         echo = {
