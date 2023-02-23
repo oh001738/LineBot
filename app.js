@@ -88,7 +88,7 @@ async function handleEvent(event) {
             model: "text-davinci-003",
             prompt: event.message.text.substring(textCallSignLength),
             temperature: 0.3,
-            max_tokens: 500,
+            max_tokens: 1000,
         });
         echo = {
             type: 'text',
