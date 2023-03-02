@@ -85,7 +85,7 @@ async function handleEvent(event) {
         };
     } else if (inputText.startsWith(textCallSign)) {
         const completion = await openai.createCompletion({
-            model: "text-davinci-003",
+            model: "gpt-3.5-turbo",
             prompt: event.message.text.substring(textCallSignLength),
             temperature: 0.3,
             max_tokens: 1000,
